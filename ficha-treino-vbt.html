@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ficha de Treino de Força — VBT</title>
+<style>
+:root{--bg:#0f1115;--card:#181b22;--line:#2a2f3a;--txt:#eef0f4;--sub:#9aa3b2;--acc:#5eead4;--acc2:#f59e0b;
+padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f4f5f7;--card:#fff;--line:#e2e4ea;--txt:#171a21;--sub:#5c6270}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:Arial,Helvetica,sans-serif;min-height:100%;padding:16px}
+h1{font-size:1.25rem;margin:0 0 4px}
+.sub{color:var(--sub);font-size:.85rem;margin-bottom:16px}
+select{width:100%;padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--txt);font-size:1rem;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:10px}
+.stat b{display:block;font-size:1.15rem}
+.stat span{color:var(--sub);font-size:.72rem;text-transform:uppercase}
+.zones{display:grid;gap:8px}
+.zone{display:flex;justify-content:space-between;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer}
+.zone.active{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+.zone .zn{font-weight:bold;font-size:.85rem}
+.zone .zd{color:var(--sub);font-size:.72rem}
+.zone .zl{font-size:1.1rem;font-weight:bold;color:var(--acc2)}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:.85rem}
+th,td{text-align:center;padding:6px 4px;border-bottom:1px solid var(--line)}
+th{color:var(--sub);font-weight:normal;font-size:.72rem;text-transform:uppercase}
+input[type=number]{width:56px;padding:5px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--txt);text-align:center}
+.check{width:18px;height:18px}
+.vok{color:#22c55e;font-weight:bold}.vbaixo{color:#ef4444;font-weight:bold}
+.foot{color:var(--sub);font-size:.72rem;margin-top:6px}
+button.rst{background:none;border:1px solid var(--line);color:var(--sub);border-radius:6px;padding:6px 10px;font-size:.75rem;margin-top:8px}
+.homegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.acard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;cursor:pointer}
+.acard:active,.acard:hover{border-color:var(--acc)}
+.acard b{display:block;font-size:1rem;margin-bottom:8px}
+.acard .al{color:var(--sub);font-size:.72rem;display:flex;justify-content:space-between;margin-top:2px}
+.backbtn{background:none;border:none;color:var(--acc);font-size:.85rem;cursor:pointer;padding:0;margin-bottom:10px;display:block}
+select{width:100%;padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--txt);font-size:1rem;margin-bottom:14px}
+</style></head>
+<body>
+<h1 id="h1">Ficha de Treino de Força — VBT</h1>
+<div class="sub" id="subt">Selecione um atleta para abrir a ficha de treino individual</div>
+<div id="app"></div>
+
+<script>
+const A={"ana":{"nome":"Ana Luiza","idade":19,"peso":54,"mov":"SUPINO","rm":50.9,"otimo":34.5,"vmSug":0.8,"zonas":[["Speed - Strength",40,20.4,1.07,0.85],["Strength -speed",70,35.6,0.67,0.54],["Accelerative Strength",90,45.8,0.41,0.33],["Absolute strength",100,50.9,0.28,0.23]]},"joao":{"nome":"João Vitor","idade":26,"peso":66,"mov":"SUPINO","rm":115.6,"otimo":58.4,"vmSug":0.73,"zonas":[["Speed - Strength",30,34.7,1.15,0.92],["Strength -speed",60,69.3,0.73,0.58],["Accelerative Strength",80,92.4,0.45,0.36],["Absolute strength",100,115.6,0.18,0.14]]},"jose":{"nome":"Jose Marcelo","idade":27,"peso":74,"mov":"SUPINO","rm":78.5,"otimo":46.4,"vmSug":0.8,"zonas":[["Speed - Strength",30,23.6,1.09,0.87],["Strength -speed",70,55.0,0.63,0.51],["Accelerative Strength",90,70.7,0.41,0.33],["Absolute strength",100,78.5,0.29,0.23]]},"kawany":{"nome":"Kawany Santos","idade":18,"peso":58,"mov":"REMADA BAIXA","rm":33.6,"otimo":35.4,"vmSug":0.8,"zonas":[["Speed - Strength",40,13.4,1.11,0.89],["Strength -speed",80,26.8,0.67,0.54],["Accelerative Strength",100,33.6,0.46,0.36]]},"laura":{"nome":"Laura Ferreira","idade":null,"peso":68,"mov":"SUPINO","rm":42.5,"otimo":30,"vmSug":0.66,"zonas":[["Speed - Strength",40,17.0,1.24,0.99],["Strength -speed",70,29.7,0.72,0.57],["Accelerative Strength",90,38.2,0.37,0.29],["Absolute strength",100,42.5,0.19,0.16]]},"linda":{"nome":"Linda Geovana","idade":null,"peso":73,"mov":"SUPINO","rm":49.0,"otimo":28.9,"vmSug":0.31,"zonas":[["Speed - Strength",30,14.7,1.14,0.91],["Strength -speed",70,34.3,0.67,0.54],["Accelerative Strength",90,44.1,0.44,0.35]]},"marcos":{"nome":"Marcos Santos","idade":25,"peso":88,"mov":"SUPINO","rm":128.7,"otimo":73.1,"vmSug":0.8,"zonas":[["Speed - Strength",20,25.7,0.97,0.78],["Strength -speed",50,64.3,0.71,0.57],["Accelerative Strength",80,103.0,0.45,0.36],["Absolute strength",100,128.7,0.28,0.22]]},"mary":{"nome":"Mary Haise","idade":null,"peso":78.3,"mov":"SUPINO","rm":59.3,"otimo":40,"vmSug":0.66,"zonas":[["Speed - Strength",30,17.8,1.19,0.95],["Strength -speed",70,41.5,0.61,0.49],["Accelerative Strength",90,53.4,0.33,0.26],["Absolute strength",100,59.3,0.18,0.15]]},"natan":{"nome":"Natan Venancio","idade":null,"peso":90.1,"mov":"SUPINO","rm":119.2,"otimo":70,"vmSug":0.72,"zonas":[["Speed - Strength",30,35.8,1.25,1.0],["Strength -speed",60,71.5,0.72,0.58],["Accelerative Strength",80,95.4,0.37,0.3],["Absolute strength",100,119.2,0.02,0.02]]},"riquelme":{"nome":"Riquelme","idade":27,"peso":74,"mov":"SUPINO","rm":95.9,"otimo":70,"vmSug":0.8,"zonas":[["Speed - Strength",40,38.4,1.28,1.02],["Strength -speed",80,76.7,0.62,0.5],["Accelerative Strength",90,86.3,0.46,0.36],["Absolute strength",100,95.9,0.29,0.23]]},"william":{"nome":"William Marques","idade":null,"peso":68,"mov":"SUPINO","rm":83.3,"otimo":58.2,"vmSug":0.8,"zonas":[["Speed - Strength",30,25.0,1.05,0.84],["Strength -speed",60,50.0,0.68,0.54],["Accelerative Strength",80,66.7,0.43,0.34],["Absolute strength",100,83.3,0.17,0.14]]}};
+
+const NOTES={"laura":"As avaliações de Supino, Remada, Agachamento e Desenvolvimento fazem parte do acompanhamento de evolução (tendência) da atleta — os valores são atualizados a cada nova avaliação."};
+const SR={"Speed - Strength":[5,5],"Strength -speed":[4,4],"Accelerative Strength":[4,3],"Absolute strength":[3,2]};
+const ZLABEL={"Speed - Strength":"Força-Velocidade","Strength -speed":"Velocidade-Força","Accelerative Strength":"Força Acelerativa","Absolute strength":"Força Absoluta"};
+
+let state={};
+try{state=JSON.parse(localStorage.getItem('ficha_vbt_state')||'{}')}catch(e){state={}}
+function save(){try{localStorage.setItem('ficha_vbt_state',JSON.stringify(state))}catch(e){}}
+
+let view='home', current=null, activeZoneIdx=0;
+
+function renderHome(){
+  document.getElementById('h1').textContent='Ficha de Treino de Força — VBT';
+  document.getElementById('subt').textContent='Selecione um atleta para abrir a ficha de treino individual';
+  let html='<div class="homegrid">';
+  Object.keys(A).forEach(k=>{
+    const d=A[k];
+    html+=`<div class="acard" data-k="${k}"><b>${d.nome}</b>
+      <div class="al"><span>Exercício</span><span>${d.mov}</span></div>
+      <div class="al"><span>1RM</span><span>${d.rm} kg</span></div>
+      <div class="al"><span>Carga ótima</span><span>${d.otimo} kg</span></div></div>`;
+  });
+  html+='</div>';
+  document.getElementById('app').innerHTML=html;
+  document.querySelectorAll('.acard').forEach(el=>el.onclick=()=>{current=el.dataset.k;activeZoneIdx=0;view='detail';render()});
+}
+
+function render(){
+  if(view==='home'){renderHome();return}
+  const d=A[current];
+  document.getElementById('h1').textContent=d.nome;
+  document.getElementById('subt').textContent=d.mov+' · Ficha individual de treino de força (VBT)';
+  const key=current+'_'+activeZoneIdx;
+  if(!state[key])state[key]={sets:{}};
+  const zona=d.zonas[activeZoneIdx];
+  const [zn,pct,carga,v0,v20]=zona;
+  const [nSets,nReps]=SR[zn];
+  let html='<button class="backbtn" id="back">← Voltar para lista de atletas</button>';
+  if(NOTES[current]){
+    html+=`<div class="card" style="border-color:var(--acc2)"><span style="color:var(--acc2);font-weight:bold;font-size:.78rem">NOTA</span>
+    <div style="font-size:.82rem;margin-top:4px">${NOTES[current]}</div></div>`;
+  }
+  html+=`<div class="card"><div class="grid">
+    <div class="stat"><span>Idade</span><b>${d.idade??'—'}</b></div>
+    <div class="stat"><span>Peso</span><b>${d.peso} kg</b></div>
+    <div class="stat"><span>Exercício</span><b>${d.mov}</b></div>
+    <div class="stat"><span>1RM estimado</span><b>${d.rm} kg</b></div>
+    <div class="stat"><span>Carga ótima potência</span><b>${d.otimo} kg</b></div>
+    <div class="stat"><span>VM alvo</span><b>${d.vmSug} m/s</b></div>
+  </div></div>
+  <div class="card"><div class="zones">`;
+  d.zonas.forEach((z,i)=>{
+    html+=`<div class="zone ${i===activeZoneIdx?'active':''}" data-i="${i}">
+      <div><div class="zn">${ZLABEL[z[0]]}</div><div class="zd">${z[1]}% RM · ${SR[z[0]][0]}x${SR[z[0]][1]} · alvo ${z[3]} m/s</div></div>
+      <div class="zl">${z[2]} kg</div></div>`;
+  });
+  html+=`</div></div>
+  <div class="card">
+    <div class="zn" style="margin-bottom:6px">${ZLABEL[zn]} — ${pct}% RM · ${carga} kg · faixa de velocidade ${v20}–${v0} m/s</div>
+    <table><thead><tr><th>Série</th><th>Feito</th><th>Carga (kg)</th><th>V. média (m/s)</th><th>Status</th></tr></thead><tbody>`;
+  for(let s=1;s<=nSets;s++){
+    const st=state[key].sets[s]||{};
+    html+=`<tr><td>${s}/${nSets} · ${nReps} reps</td>
+      <td><input type="checkbox" class="check" data-s="${s}" data-f="done" ${st.done?'checked':''}></td>
+      <td><input type="number" step="0.5" data-s="${s}" data-f="carga" value="${st.carga??carga}"></td>
+      <td><input type="number" step="0.01" data-s="${s}" data-f="v" value="${st.v??''}" placeholder="—"></td>
+      <td class="statuscell">${statusHtml(st.v,v20)}</td></tr>`;
+  }
+  html+=`</tbody></table><div class="foot">Abaixo de ${v20} m/s: perda de velocidade acima de 20% — considere encerrar a série/exercício.</div>
+  <button class="rst" id="rst">Limpar registros desta zona</button></div>`;
+  document.getElementById('app').innerHTML=html;
+
+  document.getElementById('back').onclick=()=>{view='home';render()};
+  document.querySelectorAll('.zone').forEach(el=>el.onclick=()=>{activeZoneIdx=+el.dataset.i;render()});
+  document.querySelectorAll('input').forEach(el=>el.onchange=()=>{
+    const s=el.dataset.s,f=el.dataset.f;
+    if(!state[key].sets[s])state[key].sets[s]={};
+    state[key].sets[s][f]=f==='done'?el.checked:parseFloat(el.value);
+    save();render();
+  });
+  document.getElementById('rst').onclick=()=>{state[key]={sets:{}};save();render()};
+}
+function statusHtml(v,v20){
+  if(v===undefined||v===null||isNaN(v))return'—';
+  return v>=v20?'<span class="vok">OK</span>':'<span class="vbaixo">Abaixo</span>';
+}
+render();
+</script>
+</body></html>
